@@ -23,8 +23,13 @@ const coinSearch = document.getElementById('coinSearch');
 function renderCoins() {
   const searchTerm = coinSearch.value.toLowerCase();
   coinsContainer.innerHTML = '';
+
+  // Render available coins matching search
   availableCoins
-    .filter(coin => coin.name.toLowerCase().includes(searchTerm) || coin.symbol.toLowerCase().includes(searchTerm))
+    .filter(coin =>
+      coin.name.toLowerCase().includes(searchTerm) ||
+      coin.symbol.toLowerCase().includes(searchTerm)
+    )
     .forEach(coin => {
       const btn = document.createElement('button');
       btn.textContent = `${coin.symbol} - ${coin.name}`;
@@ -37,7 +42,32 @@ function renderCoins() {
       };
       coinsContainer.appendChild(btn);
     });
+
+  // Show typed coin if it doesn’t exist in availableCoins
+  if (searchTerm && !availableCoins.some(c => c.id === searchTerm) && !selectedCoins.includes(searchTerm)) {
+    const btn = document.createElement('button');
+    btn.textContent = `Add "${searchTerm}"`;
+    btn.classList.add('custom-coin');
+    btn.onclick = () => {
+      selectedCoins.push(searchTerm);
+      coinSearch.value = '';
+      renderCoins();
+    };
+    coinsContainer.appendChild(btn);
+  }
 }
+
+// Add coin on Enter key
+coinSearch.addEventListener('keydown', (e) => {
+  if (e.key === 'Enter') {
+    const typed = coinSearch.value.trim().toLowerCase();
+    if (typed && !selectedCoins.includes(typed)) {
+      selectedCoins.push(typed);
+      coinSearch.value = '';
+      renderCoins();
+    }
+  }
+});
 
 coinSearch.addEventListener('input', renderCoins);
 
@@ -115,6 +145,3 @@ function renderResults(data) {
 
 // Initial render
 renderCoins();
-
-
-
