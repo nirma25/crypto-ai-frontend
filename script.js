@@ -61,7 +61,9 @@ submitBtn.onclick = async () => {
 
   try {
     const endpoint = activeTab === 'analyze' ? '/crypto/analyze' : '/crypto/compare';
-    const res = await fetch(`http://localhost:8000${endpoint}`, {
+    const backendURL = "crypto-ai-backend-production.up.railway.app";
+
+    const response = await fetch(`${backendURL}${endpoint}`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ coins: selectedCoins })
@@ -113,3 +115,4 @@ function renderResults(data) {
 
 // Initial render
 renderCoins();
+
