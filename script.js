@@ -69,8 +69,8 @@ submitBtn.onclick = async () => {
       body: JSON.stringify({ coins: selectedCoins })
     });
 
-    if (!res.ok) throw new Error('Request failed');
-    const data = await res.json();
+    if (!response.ok) throw new Error('Request failed');
+    const data = await response.json();
     renderResults(data);
   } catch (err) {
     resultsDiv.innerHTML = `<p style="color:#f87171">${err.message}</p>`;
@@ -115,5 +115,6 @@ function renderResults(data) {
 
 // Initial render
 renderCoins();
+
 
 
