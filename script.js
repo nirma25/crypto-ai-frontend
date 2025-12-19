@@ -23,13 +23,8 @@ const coinSearch = document.getElementById('coinSearch');
 function renderCoins() {
   const searchTerm = coinSearch.value.toLowerCase();
   coinsContainer.innerHTML = '';
-
-  // Render available coins matching search
   availableCoins
-    .filter(coin =>
-      coin.name.toLowerCase().includes(searchTerm) ||
-      coin.symbol.toLowerCase().includes(searchTerm)
-    )
+    .filter(coin => coin.name.toLowerCase().includes(searchTerm) || coin.symbol.toLowerCase().includes(searchTerm))
     .forEach(coin => {
       const btn = document.createElement('button');
       btn.textContent = `${coin.symbol} - ${coin.name}`;
@@ -42,32 +37,7 @@ function renderCoins() {
       };
       coinsContainer.appendChild(btn);
     });
-
-  // Show typed coin if it doesn’t exist in availableCoins
-  if (searchTerm && !availableCoins.some(c => c.id === searchTerm) && !selectedCoins.includes(searchTerm)) {
-    const btn = document.createElement('button');
-    btn.textContent = `Add "${searchTerm}"`;
-    btn.classList.add('custom-coin');
-    btn.onclick = () => {
-      selectedCoins.push(searchTerm);
-      coinSearch.value = '';
-      renderCoins();
-    };
-    coinsContainer.appendChild(btn);
-  }
 }
-
-// Add coin on Enter key
-coinSearch.addEventListener('keydown', (e) => {
-  if (e.key === 'Enter') {
-    const typed = coinSearch.value.trim().toLowerCase();
-    if (typed && !selectedCoins.includes(typed)) {
-      selectedCoins.push(typed);
-      coinSearch.value = '';
-      renderCoins();
-    }
-  }
-});
 
 coinSearch.addEventListener('input', renderCoins);
 
@@ -91,16 +61,14 @@ submitBtn.onclick = async () => {
 
   try {
     const endpoint = activeTab === 'analyze' ? '/crypto/analyze' : '/crypto/compare';
-    const backendURL = "https://crypto-ai-backend-production.up.railway.app";
-
-    const response = await fetch(`${backendURL}${endpoint}`, {
+    const res = await fetch(`https://crypto-ai-backend-production.up.railway.app${endpoint}`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ coins: selectedCoins })
     });
 
-    if (!response.ok) throw new Error('Request failed');
-    const data = await response.json();
+    if (!res.ok) throw new Error('Request failed');
+    const data = await res.json();
     renderResults(data);
   } catch (err) {
     resultsDiv.innerHTML = `<p style="color:#f87171">${err.message}</p>`;
